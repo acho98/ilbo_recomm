@@ -2,4 +2,4 @@
 
 ## Overview
 This repository is for the ilbo POC. 
-It includes utilities and Jupyter notebooks used.
+It includes utils and Jupyter notebooks used.
