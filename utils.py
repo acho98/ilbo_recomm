@@ -135,7 +135,7 @@ def process_dataframe(df, category, prompt, api_key, apigw_api_key):
 
             print(f"Error: docid {row['docid']} in {category} 처리 실패 - {str(e)}")
 
-        time.sleep(4)
+        time.sleep(6)
 
     result_df = pd.DataFrame(results)
     errors_df = pd.DataFrame(errors)
