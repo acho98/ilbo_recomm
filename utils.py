@@ -401,6 +401,45 @@ def process_single_row(row, prompt, api_key, apigw_api_key):
         # 에러 출력
         print(f"Error: docid {row['docid']} 처리 실패 - {str(e)}")
 
+def calculate_token_count(messages, api_key, apigw_api_key):
+    """
+    Clova Token 계산기:
+
+    사용 예시:
+    messages = [
+        {
+            "role": "user",
+            "content": "This is test"
+        }
+    ]
+    calculate_token_count(messages, api_key, apigw_api_key)
+    """
+    url = f'https://clovastudio.apigw.ntruss.com/v1/api-tools/chat-tokenize/HCX-003'
+
+    headers = {
+        'X-NCP-CLOVASTUDIO-API-KEY': api_key,
+        'X-NCP-APIGW-API-KEY': apigw_api_key,
+        'Content-Type': 'application/json'
+    }
+
+    data = {
+        "messages": messages
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+
+    if response.status_code == 200:
+        response_data = response.json()
+        if response_data['status']['code'] == '20000':
+            total_token_count = 0
+            for message in response_data['result']['messages']:
+                total_token_count += message['count']
+            return total_token_count
+        else:
+            return None
+    else:
+        return None
+
 def call_clova_api(api_key, apigw_api_key, messages):
     """
     HCX ChatCompletion API 함수.
