@@ -222,8 +222,8 @@ def retry_failed_rows(errors_df, df, result_df, prompts, api_key, apigw_api_key,
                 context = row['content']
                 len_context = row['len_context']
 
-                if len_context > 7000:
-                    context = context[:7000]
+                if len_context > 6500:
+                    context = context[:6500]
 
                 messages = [
                     {"role": "system", "content": prompts[row['category']]},
