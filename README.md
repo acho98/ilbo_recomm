@@ -1,4 +1,4 @@
-# Ilbo_Recomm
+# Ilbo_Rec
 
 ## Overview
 This repository is for the ilbo POC. 
