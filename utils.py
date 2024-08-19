@@ -82,8 +82,8 @@ def process_dataframe(df, category, prompt, api_key, apigw_api_key):
             len_context = row['len_context']
 
             # len_context 절삭
-            if len_context > 7000:
-                context = context[:7000]
+            if len_context > 6500:
+                context = context[:6500]
 
             messages = [
                 {"role": "system", "content": prompt},
@@ -342,7 +342,7 @@ def retry_failed_rows(errors_df, df, result_df, prompts, api_key, apigw_api_key,
 
     return result_df, errors_df, logs_df
 
-def process_single_row(row, api_key, apigw_api_key):
+def process_single_row(row, prompt, api_key, apigw_api_key):
     """
     싱글 로우 처리 테스트 함수:
 
@@ -355,11 +355,11 @@ def process_single_row(row, api_key, apigw_api_key):
         len_context = row['len_context']
 
         # len_context 절삭
-        if len_context > 7000:
-            context = context[:7000]
+        if len_context > 6500:
+            context = context[:6500]
 
         messages = [
-            {"role": "system", "content": prompt_2},
+            {"role": "system", "content": prompt},
             {"role": "user", "content": context},
         ]
 
