@@ -4,7 +4,25 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from tqdm import tqdm
 import json
-import re, time
+import time
+
+def fetch_article_content(url):
+    """
+    한국일보 뉴스 url로 부터 기사 수집.
+
+    사용 예시:
+        tqdm.pandas()
+        df['content'], df['len_context'] = zip(*df['link'].progress_apply(fetch_article_content))
+    """
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, 'html.parser')
+        paragraphs = soup.find_all('p', {'class': 'editor-p'})
+        content = " ".join([p.get_text(strip=True) for p in paragraphs])
+        return content, len(content) if content else ("Content not found", 0)
+    except Exception as e:
+        return f"Error fetching content: {e}", 0
 
 def process_response_content(result_content):
     """
@@ -36,7 +54,7 @@ def process_dataframe(df, category, prompt, api_key, apigw_api_key):
         result_df: 결과 데이터 프레임
         errors_df: 오류 로그 
 
-    인퍼런스 예시:
+    사용 예시:
         prompts = {
         "난이도": prompt_1,
         "논조": prompt_2,
@@ -160,13 +178,13 @@ def retry_failed_rows(errors_df, df, result_df, prompts, api_key, apigw_api_key,
         errors_df: category 별 에러 로그
         logs_df: 전체 에러 로그
 
-    인퍼런스 예시:
+    사용 예시:
 
         #40005와 40006 오류를 제외한 모든 오류에 대해 재처리 수행
         retry_errors_df = final_errors_df[~final_errors_df['errors'].str.contains('40005|40006')]
 
         # 재처리 수행
-        final_result_df, final_errors_df, retry_logs_df = retry_failed_rows(retry_errors_df, df, final_result_df, api_key, apigw_api_key)
+        final_result_df, final_errors_df, retry_logs_df = retry_failed_rows(retry_errors_df, df, final_result_df, prompts, api_key, apigw_api_key)
 
         # 재처리 후 결과와 로그 저장
         current_time = datetime.now().strftime('%Y%m%d_%H%M%S')
